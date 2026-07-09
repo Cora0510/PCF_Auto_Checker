@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+
+.DS_Store
+.ipynb_checkpoints/
+
+# 本地输入与输出数据
+datasets/
+output/
+
+# 业务数据文件，避免误传真实数据
+*.xlsx
+*.xls
+*.csv
+*.xml
+*.flag
+*.flg
+
+# 本地密码配置不要上传；secrets.example.toml 可以保留作示例
+.streamlit/secrets.toml
+
+# 临时文件
+~$*
+.~*
+*.tmp
