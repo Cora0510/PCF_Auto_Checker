@@ -285,7 +285,7 @@ st.markdown(
     """
     <div class="pcf-hero">
         <div class="pcf-eyebrow">ETF PCF Review Desk</div>
-        <h1 class="pcf-title">ETF申购赎回清单（PCF）自动复核系统</h1>
+        <h1 class="pcf-title">ETF申购赎回清单自动复核系统</h1>
         <p class="pcf-subtitle">
             请按照ETF日终PCF复核流程依次上传T-1估值数据、投资参数文件及系统生成的PCF清单文件，
             系统将自动完成产品信息、成分券配置、估值信息及申赎业务参数的一致性校验，并生成复核结果。
@@ -307,24 +307,24 @@ with st.sidebar:
     st.write("3. 上传PCF清单文件（XML及对应辅助文件）")
     st.write("4. 执行自动复核并下载复核结果")
     st.divider()
-    st.write("建议每次复核使用同一交易日批次文件，避免跨日文件混入。")
+    st.write("请确保上传资料属于同一PCF交易日批次，其中估值数据应对应T-1估值日期，投资参数文件及PCF清单应对应当前PCF日期")
 
 st.markdown('<div class="pcf-section-label">PCF复核资料上传</div>', unsafe_allow_html=True)
-st.markdown('<div class="pcf-note">请按照日终PCF复核流程依次上传以下资料：T-1估值数据、投资参数文件及PCF清单文件。</div>', unsafe_allow_html=True)
+st.markdown('<div class="pcf-note">请按照日终PCF复核流程依次上传以下资料：T-1估值数据、投资参数文件及PCF清单文件</div>', unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 with col1:
     valuation_file = st.file_uploader("T-1估值数据文件.xlsx", type=["xlsx"], key="valuation")
-    st.caption("用于校验PCF生成所依据的NAV、单位净值及现金差额等估值信息。")
+    st.caption("用于校验PCF生成所依据的NAV、单位净值及现金差额等估值信息")
 with col2:
     mail_file = st.file_uploader("投资参数文件.xlsx", type=["xlsx"], key="mail")
-    st.caption("包含ETF申赎参数及特殊成分券配置，用于校验业务规则及参数设置。")
+    st.caption("包含ETF申赎参数及特殊成分券配置，用于校验业务规则及参数设置")
 
 pcf_files = st.file_uploader(
     "PCF清单文件（XML及辅助文件）",
     type=["xml", "flag", "flg"],
     accept_multiple_files=True,
 )
-st.caption("支持同时上传XML文件及对应flag/flg辅助文件。")
+st.caption("支持同时上传XML文件及对应flag/flg辅助文件")
 
 ready = bool(mail_file and valuation_file and pcf_files)
 
@@ -346,7 +346,7 @@ st.markdown(
 )
 
 if not ready:
-    st.info("请完成T-1估值数据、投资参数文件及PCF清单文件上传后开始自动复核。PCF清单文件需包含XML及对应辅助文件。")
+    st.info("完成T-1估值数据、投资参数文件及PCF清单文件上传后将开始自动复核")
 
 run_clicked = st.button("开始复核", type="primary", disabled=not ready, use_container_width=True)
 
