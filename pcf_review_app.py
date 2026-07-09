@@ -284,16 +284,15 @@ check_password()
 st.markdown(
     """
     <div class="pcf-hero">
-        <div class="pcf-eyebrow">ETF PCF Review System</div>
+        <div class="pcf-eyebrow">ETF PCF Auto Review System</div>
         <h1 class="pcf-title">ETF申购赎回清单自动复核系统</h1>
         <p class="pcf-subtitle">
-            请按照ETF日终PCF复核流程依次上传T-1估值数据、投资参数文件及系统生成的PCF清单文件，
-            系统将自动完成产品信息、成分券配置、估值信息及申赎业务参数的一致性校验，并生成复核结果。
+            请按照ETF日终PCF复核流程依次上传T-1估值数据、投资参数文件及系统生成的PCF清单文件，系统将自动完成产品信息、成分券信息、估值信息及申赎业务参数校验，并生成标准化复核结果
         </p>
         <div class="pcf-strip">
-            <div class="pcf-step"><b>1. T-1 估值确认</b><span>校验 NAV、创设单位净值、现金差额。</span></div>
-            <div class="pcf-step"><b>2. 投资参数维护</b><span>校验申赎单位、限额、替代比例和特殊成分券。</span></div>
-            <div class="pcf-step"><b>3. PCF 清单复核</b><span>输出汇总、异常明细和完整复核留痕。</span></div>
+            <div class="pcf-step"><b>1. T-1 估值数据校验</b><span>校验NAV、单位净值、现金差额等关键估值信息</span></div>
+            <div class="pcf-step"><b>2. 投资参数校验</b><span>校验申赎单位、申赎限额、现金替代比例及特殊成分券设置</span></div>
+            <div class="pcf-step"><b>3. PCF 清单自动复核</b><span>输出复核汇总、异常明细及完整复核底稿</span></div>
         </div>
     </div>
     """,
