@@ -9,7 +9,7 @@ import streamlit as st
 from pcf_auto_review import run_review
 
 
-st.set_page_config(page_title="ETF PCF 自动复核系统", layout="wide")
+st.set_page_config(page_title="ETF 申购赎回清单自动复核系统", layout="wide")
 
 
 def get_app_password():
@@ -284,7 +284,7 @@ check_password()
 st.markdown(
     """
     <div class="pcf-hero">
-        <div class="pcf-eyebrow">ETF PCF Review Desk</div>
+        <div class="pcf-eyebrow">ETF PCF Review System</div>
         <h1 class="pcf-title">ETF申购赎回清单自动复核系统</h1>
         <p class="pcf-subtitle">
             请按照ETF日终PCF复核流程依次上传T-1估值数据、投资参数文件及系统生成的PCF清单文件，
