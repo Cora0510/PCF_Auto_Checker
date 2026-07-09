@@ -9,7 +9,7 @@ import streamlit as st
 from pcf_auto_review import run_review
 
 
-st.set_page_config(page_title="PCF 自动复核", layout="wide")
+st.set_page_config(page_title="ETF PCF 自动复核系统", layout="wide")
 
 
 def get_app_password():
@@ -218,8 +218,56 @@ st.markdown(
         margin: 12px 0;
     }
 
+    .pcf-upload-status {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin: 12px 0 16px;
+    }
+
+    .pcf-status-item {
+        border: 1px solid var(--pcf-line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 10px 12px;
+        color: var(--pcf-muted);
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .pcf-status-item.ready {
+        border-color: #a6d8cd;
+        background: var(--pcf-teal-soft);
+        color: #0b4f49;
+    }
+
+    .pcf-output-list {
+        border: 1px solid var(--pcf-line);
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin: 12px 0 14px;
+    }
+
+    .pcf-output-list p {
+        margin: 0 0 8px;
+        color: var(--pcf-ink);
+        font-weight: 720;
+    }
+
+    .pcf-output-list ol {
+        margin: 0;
+        padding-left: 22px;
+        color: var(--pcf-muted);
+        line-height: 1.8;
+        font-size: 14px;
+    }
+
     @media (max-width: 800px) {
         .pcf-strip {
+            grid-template-columns: 1fr;
+        }
+        .pcf-upload-status {
             grid-template-columns: 1fr;
         }
         .pcf-title {
@@ -237,14 +285,14 @@ st.markdown(
     """
     <div class="pcf-hero">
         <div class="pcf-eyebrow">ETF PCF Review Desk</div>
-        <h1 class="pcf-title">PCF 自动复核</h1>
+        <h1 class="pcf-title">ETF申购赎回清单（PCF）自动复核系统</h1>
         <p class="pcf-subtitle">
-            按日终复核顺序上传 T-1 估值数据、投资参数邮件和 PCF 清单文件，
-            自动完成产品层、成份券层、估值字段、特殊设置和费率参数校验。
+            请按照ETF日终PCF复核流程依次上传T-1估值数据、投资参数文件及系统生成的PCF清单文件，
+            系统将自动完成产品信息、成分券配置、估值信息及申赎业务参数的一致性校验，并生成复核结果。
         </p>
         <div class="pcf-strip">
             <div class="pcf-step"><b>1. T-1 估值确认</b><span>校验 NAV、创设单位净值、现金差额。</span></div>
-            <div class="pcf-step"><b>2. 投资参数维护</b><span>校验申赎单位、限额、替代比例和特殊券。</span></div>
+            <div class="pcf-step"><b>2. 投资参数维护</b><span>校验申赎单位、限额、替代比例和特殊成分券。</span></div>
             <div class="pcf-step"><b>3. PCF 清单复核</b><span>输出汇总、异常明细和完整复核留痕。</span></div>
         </div>
     </div>
@@ -254,31 +302,51 @@ st.markdown(
 
 with st.sidebar:
     st.header("复核步骤")
-    st.write("1. 上传 T-1 估值数据")
-    st.write("2. 上传投资邮件")
-    st.write("3. 上传 PCF 文件夹中的 XML 与 flag/flg 文件")
-    st.write("4. 点击开始复核并下载结果")
+    st.write("1. 上传T-1估值数据文件")
+    st.write("2. 上传投资参数文件")
+    st.write("3. 上传PCF清单文件（XML及对应辅助文件）")
+    st.write("4. 执行自动复核并下载复核结果")
     st.divider()
     st.write("建议每次复核使用同一交易日批次文件，避免跨日文件混入。")
 
-st.markdown('<div class="pcf-section-label">上传复核资料</div>', unsafe_allow_html=True)
-st.markdown('<div class="pcf-note">上传顺序按日终业务链路排列：先估值数据，再投资参数，最后是系统生成的 PCF 清单。</div>', unsafe_allow_html=True)
+st.markdown('<div class="pcf-section-label">PCF复核资料上传</div>', unsafe_allow_html=True)
+st.markdown('<div class="pcf-note">请按照日终PCF复核流程依次上传以下资料：T-1估值数据、投资参数文件及PCF清单文件。</div>', unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 with col1:
-    valuation_file = st.file_uploader("T-1日估值数据.xlsx", type=["xlsx"], key="valuation")
+    valuation_file = st.file_uploader("T-1估值数据文件.xlsx", type=["xlsx"], key="valuation")
+    st.caption("用于校验PCF生成所依据的NAV、单位净值及现金差额等估值信息。")
 with col2:
-    mail_file = st.file_uploader("投资邮件.xlsx", type=["xlsx"], key="mail")
+    mail_file = st.file_uploader("投资参数文件.xlsx", type=["xlsx"], key="mail")
+    st.caption("包含ETF申赎参数及特殊成分券配置，用于校验业务规则及参数设置。")
 
 pcf_files = st.file_uploader(
-    "PCF 文件（可一次多选 XML、flag、flg）",
+    "PCF清单文件（XML及辅助文件）",
     type=["xml", "flag", "flg"],
     accept_multiple_files=True,
 )
+st.caption("支持同时上传XML文件及对应flag/flg辅助文件。")
 
 ready = bool(mail_file and valuation_file and pcf_files)
 
+valuation_status = "ready" if valuation_file else ""
+mail_status = "ready" if mail_file else ""
+pcf_status = "ready" if pcf_files else ""
+valuation_text = "✓ T-1估值数据已上传" if valuation_file else "T-1估值数据待上传"
+mail_text = "✓ 投资参数文件已上传" if mail_file else "投资参数文件待上传"
+pcf_text = "✓ PCF清单文件已上传" if pcf_files else "PCF清单文件待上传"
+st.markdown(
+    f"""
+    <div class="pcf-upload-status">
+        <div class="pcf-status-item {valuation_status}">{valuation_text}</div>
+        <div class="pcf-status-item {mail_status}">{mail_text}</div>
+        <div class="pcf-status-item {pcf_status}">{pcf_text}</div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 if not ready:
-    st.info("请先上传三类资料。PCF 文件需要包含 XML 及对应 flag/flg 文件。")
+    st.info("请完成T-1估值数据、投资参数文件及PCF清单文件上传后开始自动复核。PCF清单文件需包含XML及对应辅助文件。")
 
 run_clicked = st.button("开始复核", type="primary", disabled=not ready, use_container_width=True)
 
@@ -327,6 +395,20 @@ if run_clicked:
 
     if exception_only.empty:
         st.markdown('<div class="pcf-success">本次复核未发现异常，已生成完整复核底稿。</div>', unsafe_allow_html=True)
+
+    st.markdown(
+        """
+        <div class="pcf-output-list">
+            <p>复核完成，已生成以下结果文件：</p>
+            <ol>
+                <li>复核结果汇总表</li>
+                <li>异常明细清单</li>
+                <li>复核底稿</li>
+            </ol>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     st.download_button(
         "下载复核结果 Excel",
