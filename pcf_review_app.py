@@ -37,7 +37,7 @@ def check_password():
         return
 
     st.markdown("### 访问验证")
-    st.caption("请输入访问密码后继续使用 PCF 自动复核工具。")
+    st.caption("请输入访问密码后继续使用 PCF 自动复核工具")
     password = st.text_input("访问密码", type="password")
 
     if password:
@@ -45,7 +45,7 @@ def check_password():
             st.session_state["password_ok"] = True
             rerun_app()
         else:
-            st.error("密码不正确，请重新输入。")
+            st.error("密码不正确，请重新输入")
     st.stop()
 
 st.markdown(
@@ -297,9 +297,9 @@ st.markdown(
             请按照 ETF 日终 PCF 复核流程依次上传 T-1 估值数据、投资参数文件及系统生成的 PCF 清单文件，系统将自动完成产品信息、成份券信息、估值信息及申赎业务参数校验，并生成标准化复核结果。
         </p>
         <div class="pcf-strip">
-            <div class="pcf-step"><b>1. T-1 估值数据校验</b><span>校验 NAV、单位净值、现金差额等关键估值信息。</span></div>
-            <div class="pcf-step"><b>2. 投资参数校验</b><span>校验申赎单位、申赎限额、现金替代比例及特殊成份券设置。</span></div>
-            <div class="pcf-step"><b>3. PCF 清单自动复核</b><span>输出复核汇总、异常明细及完整复核底稿。</span></div>
+            <div class="pcf-step"><b>1. T-1 估值数据校验</b><span>校验 NAV、单位净值、现金差额等关键估值信息</span></div>
+            <div class="pcf-step"><b>2. 投资参数校验</b><span>校验申赎单位、申赎限额、现金替代比例及特殊成份券设置</span></div>
+            <div class="pcf-step"><b>3. PCF 清单自动复核</b><span>输出复核汇总、异常明细及完整复核底稿</span></div>
         </div>
     </div>
     """,
@@ -313,17 +313,17 @@ with st.sidebar:
     st.write("3. 上传 PCF 清单文件（XML 及对应辅助文件）")
     st.write("4. 执行自动复核并下载复核结果")
     st.divider()
-    st.write("请确保上传资料属于同一 PCF 交易日批次，其中估值数据应对应 T-1 估值日期，投资参数文件及 PCF 清单应对应当前 PCF 日期。")
+    st.write("请确保上传资料属于同一 PCF 交易日批次，其中估值数据应对应 T-1 估值日期，投资参数文件及 PCF 清单应对应当前 PCF 日期")
 
 st.markdown('<div class="pcf-section-label">PCF 复核资料上传</div>', unsafe_allow_html=True)
-st.markdown('<div class="pcf-note">请按照日终 PCF 复核流程依次上传以下资料：T-1 估值数据、投资参数文件及 PCF 清单文件。</div>', unsafe_allow_html=True)
+st.markdown('<div class="pcf-note">请按照日终 PCF 复核流程依次上传以下资料：T-1 估值数据、投资参数文件及 PCF 清单文件</div>', unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 with col1:
     valuation_file = st.file_uploader("T-1 估值数据文件.xlsx", type=["xlsx"], key="valuation")
-    st.caption("用于校验 PCF 生成所依据的 NAV、单位净值及现金差额等估值信息。")
+    st.caption("用于校验 PCF 生成所依据的 NAV、单位净值及现金差额等估值信息")
 with col2:
     mail_file = st.file_uploader("投资参数文件.xlsx", type=["xlsx"], key="mail")
-    st.caption("包含 ETF 申赎参数及特殊成份券配置，用于校验业务规则及参数设置。")
+    st.caption("包含 ETF 申赎参数及特殊成份券配置，用于校验业务规则及参数设置")
 
 pcf_files = st.file_uploader(
     "PCF 清单文件（XML 及辅助文件）",
@@ -352,7 +352,7 @@ st.markdown(
 )
 
 if not ready:
-    st.info("完成 T-1 估值数据、投资参数文件及 PCF 清单文件上传后将开始自动复核。")
+    st.info("完成 T-1 估值数据、投资参数文件及 PCF 清单文件上传后将开始自动复核")
 
 run_clicked = st.button("开始复核", type="primary", disabled=not ready, use_container_width=True)
 
@@ -374,7 +374,7 @@ if run_clicked:
             try:
                 result = run_review(data_dir=data_dir, output_dir=output_dir)
             except Exception as exc:
-                st.error("复核失败，请检查上传文件是否完整、文件名是否符合当日 PCF 命名规则。")
+                st.error("复核失败，请检查上传文件是否完整、文件名是否符合当日 PCF 命名规则")
                 st.exception(exc)
                 st.stop()
 
@@ -400,7 +400,7 @@ if run_clicked:
     m4.metric("异常项", exception_count)
 
     if exception_only.empty:
-        st.markdown('<div class="pcf-success">本次复核未发现异常，已生成完整复核底稿。</div>', unsafe_allow_html=True)
+        st.markdown('<div class="pcf-success">本次复核未发现异常，已生成完整复核底稿</div>', unsafe_allow_html=True)
 
     st.markdown(
         """
@@ -429,10 +429,10 @@ if run_clicked:
         st.dataframe(summary, use_container_width=True, hide_index=True)
     with tab_exception:
         if exception_only.empty:
-            st.success("本次复核未发现异常。")
+            st.success("本次复核未发现异常")
         else:
             st.dataframe(exception_only, use_container_width=True, hide_index=True)
     with tab_module:
         st.dataframe(module_summary, use_container_width=True, hide_index=True)
 
-    st.caption(f"本次共完成 {total_checks} 项校验。")
+    st.caption(f"本次共完成 {total_checks} 项校验")
