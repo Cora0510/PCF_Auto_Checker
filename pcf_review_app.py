@@ -20,6 +20,13 @@ def get_app_password():
     return secret_password or os.environ.get("APP_PASSWORD", "")
 
 
+def rerun_app():
+    if hasattr(st, "rerun"):
+        st.rerun()
+    else:
+        st.experimental_rerun()
+
+
 def check_password():
     app_password = get_app_password()
     if not app_password:
@@ -36,7 +43,7 @@ def check_password():
     if password:
         if hmac.compare_digest(password, app_password):
             st.session_state["password_ok"] = True
-            st.rerun()
+            rerun_app()
         else:
             st.error("密码不正确，请重新输入。")
     st.stop()
@@ -287,12 +294,12 @@ st.markdown(
         <div class="pcf-eyebrow">ETF PCF Auto Review System</div>
         <h1 class="pcf-title">ETF 申购赎回清单自动复核系统</h1>
         <p class="pcf-subtitle">
-            请按照 ETF 日终 PCF 复核流程依次上传 T-1 估值数据、投资参数文件及系统生成的 PCF 清单文件，系统将自动完成产品信息、成分券信息、估值信息及申赎业务参数校验，并生成标准化复核结果
+            请按照 ETF 日终 PCF 复核流程依次上传 T-1 估值数据、投资参数文件及系统生成的 PCF 清单文件，系统将自动完成产品信息、成份券信息、估值信息及申赎业务参数校验，并生成标准化复核结果。
         </p>
         <div class="pcf-strip">
-            <div class="pcf-step"><b>1. T-1 估值数据校验</b><span>校验 NAV 、单位净值、现金差额等关键估值信息</span></div>
-            <div class="pcf-step"><b>2. 投资参数校验</b><span>校验申赎单位、申赎限额、现金替代比例及特殊成分券设置</span></div>
-            <div class="pcf-step"><b>3. PCF 清单自动复核</b><span>输出复核汇总、异常明细及完整复核底稿</span></div>
+            <div class="pcf-step"><b>1. T-1 估值数据校验</b><span>校验 NAV、单位净值、现金差额等关键估值信息。</span></div>
+            <div class="pcf-step"><b>2. 投资参数校验</b><span>校验申赎单位、申赎限额、现金替代比例及特殊成份券设置。</span></div>
+            <div class="pcf-step"><b>3. PCF 清单自动复核</b><span>输出复核汇总、异常明细及完整复核底稿。</span></div>
         </div>
     </div>
     """,
@@ -303,34 +310,34 @@ with st.sidebar:
     st.header("复核步骤")
     st.write("1. 上传 T-1 估值数据文件")
     st.write("2. 上传投资参数文件")
-    st.write("3. 上传 PCF 清单文件（ XML 及对应辅助文件）")
+    st.write("3. 上传 PCF 清单文件（XML 及对应辅助文件）")
     st.write("4. 执行自动复核并下载复核结果")
     st.divider()
-    st.write("请确保上传资料属于同一 PCF 交易日批次，其中估值数据应对应 T-1 估值日期，投资参数文件及 PCF 清单应对应当前 PCF 日期")
+    st.write("请确保上传资料属于同一 PCF 交易日批次，其中估值数据应对应 T-1 估值日期，投资参数文件及 PCF 清单应对应当前 PCF 日期。")
 
-st.markdown('<div class="pcf-section-label"> PCF 复核资料上传</div>', unsafe_allow_html=True)
-st.markdown('<div class="pcf-note">请按照日终 PCF 复核流程依次上传以下资料：T-1 估值数据、投资参数文件及 PCF 清单文件</div>', unsafe_allow_html=True)
+st.markdown('<div class="pcf-section-label">PCF 复核资料上传</div>', unsafe_allow_html=True)
+st.markdown('<div class="pcf-note">请按照日终 PCF 复核流程依次上传以下资料：T-1 估值数据、投资参数文件及 PCF 清单文件。</div>', unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 with col1:
     valuation_file = st.file_uploader("T-1 估值数据文件.xlsx", type=["xlsx"], key="valuation")
-    st.caption("用于校验 PCF 生成所依据的 NAV 、单位净值及现金差额等估值信息")
+    st.caption("用于校验 PCF 生成所依据的 NAV、单位净值及现金差额等估值信息。")
 with col2:
     mail_file = st.file_uploader("投资参数文件.xlsx", type=["xlsx"], key="mail")
-    st.caption("包含 ETF 申赎参数及特殊成分券配置，用于校验业务规则及参数设置")
+    st.caption("包含 ETF 申赎参数及特殊成份券配置，用于校验业务规则及参数设置。")
 
 pcf_files = st.file_uploader(
-    " PCF 清单文件（ XML 及辅助文件）",
+    "PCF 清单文件（XML 及辅助文件）",
     type=["xml", "flag", "flg"],
     accept_multiple_files=True,
 )
-st.caption("支持同时上传 XML 文件及对应 flag / flg 辅助文件")
+st.caption("支持同时上传 XML 文件及对应 flag/flg 辅助文件。")
 
 ready = bool(mail_file and valuation_file and pcf_files)
 
 valuation_status = "ready" if valuation_file else ""
 mail_status = "ready" if mail_file else ""
 pcf_status = "ready" if pcf_files else ""
-valuation_text = "✓ T-1 估值数据已上传" if valuation_file else " T-1 估值数据待上传"
+valuation_text = "✓ T-1 估值数据已上传" if valuation_file else "T-1 估值数据待上传"
 mail_text = "✓ 投资参数文件已上传" if mail_file else "投资参数文件待上传"
 pcf_text = "✓ PCF 清单文件已上传" if pcf_files else "PCF 清单文件待上传"
 st.markdown(
@@ -345,7 +352,7 @@ st.markdown(
 )
 
 if not ready:
-    st.info("完成 T-1 估值数据、投资参数文件及 PCF 清单文件上传后将开始自动复核")
+    st.info("完成 T-1 估值数据、投资参数文件及 PCF 清单文件上传后将开始自动复核。")
 
 run_clicked = st.button("开始复核", type="primary", disabled=not ready, use_container_width=True)
 
@@ -360,7 +367,7 @@ if run_clicked:
             output_dir.mkdir(parents=True, exist_ok=True)
 
             (data_dir / "投资邮件.xlsx").write_bytes(mail_file.getbuffer())
-            (data_dir / "T-1 日估值数据.xlsx").write_bytes(valuation_file.getbuffer())
+            (data_dir / "T-1日估值数据.xlsx").write_bytes(valuation_file.getbuffer())
             for uploaded in pcf_files:
                 (pcf_dir / Path(uploaded.name).name).write_bytes(uploaded.getbuffer())
 
@@ -371,7 +378,7 @@ if run_clicked:
                 st.exception(exc)
                 st.stop()
 
-            final_output = Path("output") / "PCF 自动复核结果_界面版.xlsx"
+            final_output = Path("output") / "PCF自动复核结果_界面版.xlsx"
             final_output.parent.mkdir(exist_ok=True)
             shutil.copy2(result["output_file"], final_output)
 
@@ -412,7 +419,7 @@ if run_clicked:
     st.download_button(
         "下载复核结果 Excel",
         data=output_bytes,
-        file_name="PCF 自动复核结果.xlsx",
+        file_name="PCF自动复核结果.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         use_container_width=True,
     )
